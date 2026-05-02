@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Abby Car &#8212; WhatsApp Tool</title>
+<title>Abby Car — WhatsApp Tool</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root {
@@ -80,9 +80,9 @@
 <body>
 
 <div class="header">
-  <div class="header-logo">&#x1F697;</div>
+  <div class="header-logo">🚗</div>
   <div>
-    <h1>Abby Car &#8212; WhatsApp Tool</h1>
+    <h1>Abby Car — WhatsApp Tool</h1>
     <p>&#913;&#957;&#941;&#946;&#945;&#963;&#949; &#964;&#959; Reservations Journal &#945;&#960;&#972; &#964;&#959; Wheelso (.xlsx)</p>
   </div>
 </div>
@@ -115,8 +115,8 @@
 </div>
 
 <script>
-const PORT_MSG = n => `Hello ${n} from Abby Car &#x1F697;&#x2600;&#xFE0F;\nWe hope you're excited for your trip to Naxos! To prepare your rental, could you please let us know:\n&#x1F6F3; Which boat/ferry are you arriving with?\nThis helps us have everything ready on time.\nJust a quick note: due to port rules and heavy traffic, we can't meet you directly at the port. But our office is only an easy 8-minute walk away!\n&#x1F4CD; Find us here: https://maps.app.goo.gl/ecDhc1aAghmEsyDaA\nWe've attached a photo of the entrance to help.\nFeel free to message or call us if needed&#8212;we're happy to help!\n&#8211; Abby Car, Naxos`;
-const AIRPORT_MSG = n => `Hello ${n} from Abby Car &#x1F697;&#x2600;&#xFE0F;\nWe hope you're excited for your trip to Naxos! To better prepare your car rental, could you please let us know:\n&#x2708;&#xFE0F; Which flight number will you be arriving with tomorrow?\nThis helps us ensure a smooth pickup for you.\nThank you and safe travels!\n&#8211; Abby Car, Naxos`;
+const PORT_MSG = n => `Hello ${n} from Abby Car 🚗☀️\nWe hope you're excited for your trip to Naxos! To prepare your rental, could you please let us know:\n🛳 Which boat/ferry are you arriving with?\nThis helps us have everything ready on time.\nJust a quick note: due to port rules and heavy traffic, we can't meet you directly at the port. But our office is only an easy 8-minute walk away!\n📍 Find us here: https://maps.app.goo.gl/ecDhc1aAghmEsyDaA\nWe've attached a photo of the entrance to help.\nFeel free to message or call us if needed—we're happy to help!\n– Abby Car, Naxos`;
+const AIRPORT_MSG = n => `Hello ${n} from Abby Car 🚗☀️\nWe hope you're excited for your trip to Naxos! To better prepare your car rental, could you please let us know:\n✈️ Which flight number will you be arriving with tomorrow?\nThis helps us ensure a smooth pickup for you.\nThank you and safe travels!\n– Abby Car, Naxos`;
 
 const CC = [
   {code:'1',name:'USA/Canada',min:10,max:10},{code:'30',name:'Greece',min:10,max:10},
@@ -167,7 +167,7 @@ function analyzePhone(raw) {
       return {ok:false,issues,suggestions:sugg,phone:digits};
     }
     if (d.valid) return {ok:true, phone: d.code+d.lc};
-    issues.push(`+${d.code} (${d.name}): ${d.local.length} &#968;&#951;&#966;&#943;&#945; (&#945;&#957;&#945;&#956;&#941;&#957;&#959;&#957;&#964;&#945;&#953; ${d.min}&#8211;${d.max}).`);
+    issues.push(`+${d.code} (${d.name}): ${d.local.length} &#968;&#951;&#966;&#943;&#945; (&#945;&#957;&#945;&#956;&#941;&#957;&#959;&#957;&#964;&#945;&#953; ${d.min}–${d.max}).`);
     if (d.local.length>d.max) {
       sugg.push({label:`&#932;&#949;&#955;&#949;&#965;&#964;&#945;&#943;&#945; ${d.max} &#968;&#951;&#966;&#943;&#945;`, phone: d.code+d.local.slice(d.local.length-d.max)});
       sugg.push({label:`&#928;&#961;&#974;&#964;&#945; ${d.max} &#968;&#951;&#966;&#943;&#945;`, phone: d.code+d.local.slice(0,d.max)});
@@ -255,8 +255,8 @@ function render() {
   const ports=customers.filter(c=>c.type==='port');
   const airports=customers.filter(c=>c.type==='airport');
   let html='';
-  if(ports.length){html+=`<div class="section-label">&#x1F6F3; Port (${ports.length})</div>`;ports.forEach(c=>html+=card(c));}
-  if(airports.length){html+=`<div class="section-label">&#x2708;&#xFE0F; Airport (${airports.length})</div>`;airports.forEach(c=>html+=card(c));}
+  if(ports.length){html+=`<div class="section-label">🛳 Port (${ports.length})</div>`;ports.forEach(c=>html+=card(c));}
+  if(airports.length){html+=`<div class="section-label">✈️ Airport (${airports.length})</div>`;airports.forEach(c=>html+=card(c));}
   document.getElementById('list').innerHTML=html;
   updateStats();
 }
