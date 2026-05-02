@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Abby Car \u2014 WhatsApp Tool</title>
+<title>Abby Car — WhatsApp Tool</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root {
@@ -80,9 +80,9 @@
 <body>
 
 <div class="header">
-  <div class="header-logo">\u{1F697}</div>
+  <div class="header-logo">&#x1F697;</div>
   <div>
-    <h1>Abby Car \u2014 WhatsApp Tool</h1>
+    <h1>Abby Car — WhatsApp Tool</h1>
     <p>&#913;&#957;&#941;&#946;&#945;&#963;&#949; &#964;&#959; Reservations Journal &#945;&#960;&#972; &#964;&#959; Wheelso (.xlsx)</p>
   </div>
 </div>
@@ -173,7 +173,7 @@ function analyzePhone(raw) {
       return {ok:false,issues,suggestions:sugg,phone:digits};
     }
     if (d.valid) return {ok:true, phone: d.code+d.lc};
-    issues.push(`+${d.code} (${d.name}): ${d.local.length} &#968;&#951;&#966;&#943;&#945; (&#945;&#957;&#945;&#956;&#941;&#957;&#959;&#957;&#964;&#945;&#953; ${d.min}\u2013${d.max}).`);
+    issues.push(`+${d.code} (${d.name}): ${d.local.length} &#968;&#951;&#966;&#943;&#945; (&#945;&#957;&#945;&#956;&#941;&#957;&#959;&#957;&#964;&#945;&#953; ${d.min}&#x2013;${d.max}).`);
     if (d.local.length>d.max) {
       sugg.push({label:`&#932;&#949;&#955;&#949;&#965;&#964;&#945;&#943;&#945; ${d.max} &#968;&#951;&#966;&#943;&#945;`, phone: d.code+d.local.slice(d.local.length-d.max)});
       sugg.push({label:`&#928;&#961;&#974;&#964;&#945; ${d.max} &#968;&#951;&#966;&#943;&#945;`, phone: d.code+d.local.slice(0,d.max)});
