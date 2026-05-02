@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
+<meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Abby Car — WhatsApp Tool</title>
+<title>Abby Car &#8212; WhatsApp Tool</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root {
@@ -80,10 +80,10 @@
 <body>
 
 <div class="header">
-  <div class="header-logo">🚗</div>
+  <div class="header-logo">&#x1F697;</div>
   <div>
-    <h1>Abby Car — WhatsApp Tool</h1>
-    <p>Ανέβασε το Reservations Journal από το Wheelso (.xlsx)</p>
+    <h1>Abby Car &#8212; WhatsApp Tool</h1>
+    <p>&#913;&#957;&#941;&#946;&#945;&#963;&#949; &#964;&#959; Reservations Journal &#945;&#960;&#972; &#964;&#959; Wheelso (.xlsx)</p>
   </div>
 </div>
 
@@ -93,30 +93,30 @@
     ondragleave="this.classList.remove('drag')"
     ondrop="handleDrop(event)">
     <input type="file" id="fileInput" accept=".xlsx,.xls" onchange="handleFile(event)"/>
-    <div class="upload-icon">📂</div>
-    <h3>Ανέβασε το Excel από το Wheelso</h3>
-    <p>Κάνε κλικ ή σύρε το αρχείο εδώ · .xlsx ή .xls</p>
+    <div class="upload-icon">&#x1F4C2;</div>
+    <h3>&#913;&#957;&#941;&#946;&#945;&#963;&#949; &#964;&#959; Excel &#945;&#960;&#972; &#964;&#959; Wheelso</h3>
+    <p>&#922;&#940;&#957;&#949; &#954;&#955;&#953;&#954; &#942; &#963;&#973;&#961;&#949; &#964;&#959; &#945;&#961;&#967;&#949;&#943;&#959; &#949;&#948;&#974; &#183; .xlsx &#942; .xls</p>
   </div>
 
   <div id="fileInfo"></div>
   <div id="errorMsg"></div>
   <div id="statsArea" style="display:none">
     <div class="stats">
-      <div class="stat"><div class="stat-num" id="sTotal">0</div><div class="stat-label">Σύνολο</div></div>
-      <div class="stat"><div class="stat-num" style="color:#27AE60" id="sFound">0</div><div class="stat-label">Βρέθηκαν</div></div>
-      <div class="stat"><div class="stat-num" style="color:#E24B4A" id="sNF">0</div><div class="stat-label">Δεν βρέθηκαν</div></div>
+      <div class="stat"><div class="stat-num" id="sTotal">0</div><div class="stat-label">&#931;&#973;&#957;&#959;&#955;&#959;</div></div>
+      <div class="stat"><div class="stat-num" style="color:#27AE60" id="sFound">0</div><div class="stat-label">&#914;&#961;&#941;&#952;&#951;&#954;&#945;&#957;</div></div>
+      <div class="stat"><div class="stat-num" style="color:#E24B4A" id="sNF">0</div><div class="stat-label">&#916;&#949;&#957; &#946;&#961;&#941;&#952;&#951;&#954;&#945;&#957;</div></div>
     </div>
   </div>
   <div id="list"></div>
   <div class="bottom-bar" id="bottomBar" style="display:none">
-    <span class="prog" id="prog">0 ολοκληρωμένοι</span>
-    <button class="btn" onclick="exportCSV()">⬇ Export CSV</button>
+    <span class="prog" id="prog">0 &#959;&#955;&#959;&#954;&#955;&#951;&#961;&#969;&#956;&#941;&#957;&#959;&#953;</span>
+    <button class="btn" onclick="exportCSV()">&#x2B07; Export CSV</button>
   </div>
 </div>
 
 <script>
-const PORT_MSG = n => `Hello ${n} from Abby Car 🚗☀️\nWe hope you're excited for your trip to Naxos! To prepare your rental, could you please let us know:\n🛳 Which boat/ferry are you arriving with?\nThis helps us have everything ready on time.\nJust a quick note: due to port rules and heavy traffic, we can't meet you directly at the port. But our office is only an easy 8-minute walk away!\n📍 Find us here: https://maps.app.goo.gl/ecDhc1aAghmEsyDaA\nWe've attached a photo of the entrance to help.\nFeel free to message or call us if needed—we're happy to help!\n– Abby Car, Naxos`;
-const AIRPORT_MSG = n => `Hello ${n} from Abby Car 🚗☀️\nWe hope you're excited for your trip to Naxos! To better prepare your car rental, could you please let us know:\n✈️ Which flight number will you be arriving with tomorrow?\nThis helps us ensure a smooth pickup for you.\nThank you and safe travels!\n– Abby Car, Naxos`;
+const PORT_MSG = n => `Hello ${n} from Abby Car &#x1F697;&#x2600;&#xFE0F;\nWe hope you're excited for your trip to Naxos! To prepare your rental, could you please let us know:\n&#x1F6F3; Which boat/ferry are you arriving with?\nThis helps us have everything ready on time.\nJust a quick note: due to port rules and heavy traffic, we can't meet you directly at the port. But our office is only an easy 8-minute walk away!\n&#x1F4CD; Find us here: https://maps.app.goo.gl/ecDhc1aAghmEsyDaA\nWe've attached a photo of the entrance to help.\nFeel free to message or call us if needed&#8212;we're happy to help!\n&#8211; Abby Car, Naxos`;
+const AIRPORT_MSG = n => `Hello ${n} from Abby Car &#x1F697;&#x2600;&#xFE0F;\nWe hope you're excited for your trip to Naxos! To better prepare your car rental, could you please let us know:\n&#x2708;&#xFE0F; Which flight number will you be arriving with tomorrow?\nThis helps us ensure a smooth pickup for you.\nThank you and safe travels!\n&#8211; Abby Car, Naxos`;
 
 const CC = [
   {code:'1',name:'USA/Canada',min:10,max:10},{code:'30',name:'Greece',min:10,max:10},
@@ -156,26 +156,26 @@ function detectCC(digits) {
 }
 
 function analyzePhone(raw) {
-  if (!raw || String(raw).trim()==='') return {ok:false,empty:true,issues:['Δεν υπάρχει τηλέφωνο.'],suggestions:[]};
+  if (!raw || String(raw).trim()==='') return {ok:false,empty:true,issues:['&#916;&#949;&#957; &#965;&#960;&#940;&#961;&#967;&#949;&#953; &#964;&#951;&#955;&#941;&#966;&#969;&#957;&#959;.'],suggestions:[]};
   const digits = cleanPhone(raw);
   const d = detectCC(digits);
   const issues=[], sugg=[];
   if (d) {
     if (d.local.startsWith('0') && d.lc.length>=d.min && d.lc.length<=d.max) {
-      sugg.push({label:`Αφαίρεσε το μηδέν (${d.name})`, phone: d.code+d.lc});
-      issues.push(`+${d.code} (${d.name}): τοπικός αρ. αρχίζει με 0.`);
+      sugg.push({label:`&#913;&#966;&#945;&#943;&#961;&#949;&#963;&#949; &#964;&#959; &#956;&#951;&#948;&#941;&#957; (${d.name})`, phone: d.code+d.lc});
+      issues.push(`+${d.code} (${d.name}): &#964;&#959;&#960;&#953;&#954;&#972;&#962; &#945;&#961;. &#945;&#961;&#967;&#943;&#950;&#949;&#953; &#956;&#949; 0.`);
       return {ok:false,issues,suggestions:sugg,phone:digits};
     }
     if (d.valid) return {ok:true, phone: d.code+d.lc};
-    issues.push(`+${d.code} (${d.name}): ${d.local.length} ψηφία (αναμένονται ${d.min}–${d.max}).`);
+    issues.push(`+${d.code} (${d.name}): ${d.local.length} &#968;&#951;&#966;&#943;&#945; (&#945;&#957;&#945;&#956;&#941;&#957;&#959;&#957;&#964;&#945;&#953; ${d.min}&#8211;${d.max}).`);
     if (d.local.length>d.max) {
-      sugg.push({label:`Τελευταία ${d.max} ψηφία`, phone: d.code+d.local.slice(d.local.length-d.max)});
-      sugg.push({label:`Πρώτα ${d.max} ψηφία`, phone: d.code+d.local.slice(0,d.max)});
+      sugg.push({label:`&#932;&#949;&#955;&#949;&#965;&#964;&#945;&#943;&#945; ${d.max} &#968;&#951;&#966;&#943;&#945;`, phone: d.code+d.local.slice(d.local.length-d.max)});
+      sugg.push({label:`&#928;&#961;&#974;&#964;&#945; ${d.max} &#968;&#951;&#966;&#943;&#945;`, phone: d.code+d.local.slice(0,d.max)});
     }
   } else {
-    issues.push('Άγνωστος κωδικός χώρας.');
-    if (digits.length===10 && digits.startsWith('69')) sugg.push({label:'Ελληνικό κινητό (+30)', phone:'30'+digits});
-    if (digits.length===10 && digits.startsWith('6')) sugg.push({label:'Ελληνικό (+30)', phone:'30'+digits});
+    issues.push('&#902;&#947;&#957;&#969;&#963;&#964;&#959;&#962; &#954;&#969;&#948;&#953;&#954;&#972;&#962; &#967;&#974;&#961;&#945;&#962;.');
+    if (digits.length===10 && digits.startsWith('69')) sugg.push({label:'&#917;&#955;&#955;&#951;&#957;&#953;&#954;&#972; &#954;&#953;&#957;&#951;&#964;&#972; (+30)', phone:'30'+digits});
+    if (digits.length===10 && digits.startsWith('6')) sugg.push({label:'&#917;&#955;&#955;&#951;&#957;&#953;&#954;&#972; (+30)', phone:'30'+digits});
   }
   return {ok:false,issues,suggestions:sugg,phone:digits};
 }
@@ -192,7 +192,7 @@ function handleFile(e) { if (e.target.files[0]) processFile(e.target.files[0]); 
 
 function processFile(file) {
   document.getElementById('errorMsg').innerHTML='';
-  document.getElementById('fileInfo').innerHTML=`<div class="file-info">📄 ${file.name}</div>`;
+  document.getElementById('fileInfo').innerHTML=`<div class="file-info">&#128196; ${file.name}</div>`;
   const reader = new FileReader();
   reader.onload = e => {
     try {
@@ -201,7 +201,7 @@ function processFile(file) {
       const rows = XLSX.utils.sheet_to_json(ws, {defval:''});
       parseRows(rows);
     } catch(err) {
-      document.getElementById('errorMsg').innerHTML=`<div class="error-msg">Σφάλμα ανάγνωσης αρχείου. Βεβαιώσου ότι είναι .xlsx από το Wheelso.</div>`;
+      document.getElementById('errorMsg').innerHTML=`<div class="error-msg">&#931;&#966;&#940;&#955;&#956;&#945; &#945;&#957;&#940;&#947;&#957;&#969;&#963;&#951;&#962; &#945;&#961;&#967;&#949;&#943;&#959;&#965;. &#914;&#949;&#946;&#945;&#953;&#974;&#963;&#959;&#965; &#972;&#964;&#953; &#949;&#943;&#957;&#945;&#953; .xlsx &#945;&#960;&#972; &#964;&#959; Wheelso.</div>`;
     }
   };
   reader.readAsArrayBuffer(file);
@@ -215,7 +215,7 @@ function parseRows(rows) {
   const resKey = Object.keys(rows[0]).find(k => k.toLowerCase().includes('res no') || k==='Res no');
 
   if (!locKey || !nameKey || !phoneKey) {
-    document.getElementById('errorMsg').innerHTML=`<div class="error-msg">Δεν βρέθηκαν οι σωστές στήλες. Βεβαιώσου ότι ανεβάζεις το Reservations Journal από το Wheelso.</div>`;
+    document.getElementById('errorMsg').innerHTML=`<div class="error-msg">&#916;&#949;&#957; &#946;&#961;&#941;&#952;&#951;&#954;&#945;&#957; &#959;&#953; &#963;&#969;&#963;&#964;&#941;&#962; &#963;&#964;&#942;&#955;&#949;&#962;. &#914;&#949;&#946;&#945;&#953;&#974;&#963;&#959;&#965; &#972;&#964;&#953; &#945;&#957;&#949;&#946;&#940;&#950;&#949;&#953;&#962; &#964;&#959; Reservations Journal &#945;&#960;&#972; &#964;&#959; Wheelso.</div>`;
     return;
   }
 
@@ -231,7 +231,7 @@ function parseRows(rows) {
   });
 
   if (customers.length===0) {
-    document.getElementById('errorMsg').innerHTML=`<div class="error-msg">Δεν βρέθηκαν κρατήσεις Port ή Airport.</div>`;
+    document.getElementById('errorMsg').innerHTML=`<div class="error-msg">&#916;&#949;&#957; &#946;&#961;&#941;&#952;&#951;&#954;&#945;&#957; &#954;&#961;&#945;&#964;&#942;&#963;&#949;&#953;&#962; Port &#942; Airport.</div>`;
     document.getElementById('statsArea').style.display='none';
     document.getElementById('bottomBar').style.display='none';
     document.getElementById('list').innerHTML='';
@@ -255,8 +255,8 @@ function render() {
   const ports=customers.filter(c=>c.type==='port');
   const airports=customers.filter(c=>c.type==='airport');
   let html='';
-  if(ports.length){html+=`<div class="section-label">🛳 Port (${ports.length})</div>`;ports.forEach(c=>html+=card(c));}
-  if(airports.length){html+=`<div class="section-label">✈️ Airport (${airports.length})</div>`;airports.forEach(c=>html+=card(c));}
+  if(ports.length){html+=`<div class="section-label">&#x1F6F3; Port (${ports.length})</div>`;ports.forEach(c=>html+=card(c));}
+  if(airports.length){html+=`<div class="section-label">&#x2708;&#xFE0F; Airport (${airports.length})</div>`;airports.forEach(c=>html+=card(c));}
   document.getElementById('list').innerHTML=html;
   updateStats();
 }
@@ -270,25 +270,25 @@ function card(c) {
 
   let phoneBlock='';
   if(corrected[c.res]){
-    phoneBlock=`<div class="success-note">✓ Αριθμός διορθώθηκε σε +${ph}</div>`;
+    phoneBlock=`<div class="success-note">&#x2713; &#913;&#961;&#953;&#952;&#956;&#972;&#962; &#948;&#953;&#959;&#961;&#952;&#974;&#952;&#951;&#954;&#949; &#963;&#949; +${ph}</div>`;
   } else if(!ra.ok){
     const sugHtml=ra.suggestions.map((sg,i)=>`
       <div style="margin-bottom:8px">
         <div style="font-size:12px;color:#666;margin-bottom:4px">${sg.label}:</div>
         <div class="fix-row">
           <input type="text" id="sg-${c.res}-${i}" value="+${sg.phone}"/>
-          <button class="btn" onclick="applyPhone('${c.res}',document.getElementById('sg-${c.res}-${i}').value)">Εφάρμοσε</button>
+          <button class="btn" onclick="applyPhone('${c.res}',document.getElementById('sg-${c.res}-${i}').value)">&#917;&#966;&#940;&#961;&#956;&#959;&#963;&#949;</button>
         </div>
       </div>`).join('');
     phoneBlock=`<div class="warn-box">
-      <div class="warn-title">⚠️ Πιθανό λάθος αριθμός</div>
+      <div class="warn-title">&#x26A0;&#xFE0F; &#928;&#953;&#952;&#945;&#957;&#972; &#955;&#940;&#952;&#959;&#962; &#945;&#961;&#953;&#952;&#956;&#972;&#962;</div>
       <div class="warn-text">${ra.issues.join(' ')}</div>
       ${sugHtml}
       <div style="border-top:1px solid ${ra.suggestions.length?'#F0C040':'#eee'};padding-top:10px;margin-top:8px">
-        <div style="font-size:12px;color:#666;margin-bottom:4px">Χειροκίνητη διόρθωση:</div>
+        <div style="font-size:12px;color:#666;margin-bottom:4px">&#935;&#949;&#953;&#961;&#959;&#954;&#943;&#957;&#951;&#964;&#951; &#948;&#953;&#972;&#961;&#952;&#969;&#963;&#951;:</div>
         <div class="fix-row">
           <input type="text" id="man-${c.res}" value="+${ph}"/>
-          <button class="btn" onclick="applyPhone('${c.res}',document.getElementById('man-${c.res}').value)">Εφάρμοσε</button>
+          <button class="btn" onclick="applyPhone('${c.res}',document.getElementById('man-${c.res}').value)">&#917;&#966;&#940;&#961;&#956;&#959;&#963;&#949;</button>
         </div>
       </div>
     </div>`;
@@ -299,13 +299,13 @@ function card(c) {
       <span class="cname">${c.name}</span>
       <span class="badge ${c.type==='port'?'bp':'ba'}">${c.type==='port'?'Port':'Airport'}</span>
     </div>
-    <div class="meta">+${ph} · ${c.res}</div>
+    <div class="meta">+${ph} &#183; ${c.res}</div>
     ${phoneBlock}
     <div class="msg-box">${msg}</div>
     <div class="actions">
-      <a class="btn-wa" href="${waUrl}" target="_blank">Ανοιξε στο WhatsApp</a>
-      <button class="btn ${s==='found'?'btn-ok':''}" onclick="mark('${c.res}','found')">✓ Βρέθηκε</button>
-      <button class="btn ${s==='notfound'?'btn-no':''}" onclick="mark('${c.res}','notfound')">✗ Δεν βρέθηκε</button>
+      <a class="btn-wa" href="${waUrl}" target="_blank">&#913;&#957;&#959;&#953;&#958;&#949; &#963;&#964;&#959; WhatsApp</a>
+      <button class="btn ${s==='found'?'btn-ok':''}" onclick="mark('${c.res}','found')">&#x2713; &#914;&#961;&#941;&#952;&#951;&#954;&#949;</button>
+      <button class="btn ${s==='notfound'?'btn-no':''}" onclick="mark('${c.res}','notfound')">&#x2717; &#916;&#949;&#957; &#946;&#961;&#941;&#952;&#951;&#954;&#949;</button>
     </div>
   </div>`;
 }
@@ -318,13 +318,13 @@ function updateStats(){
   const n=Object.values(status).filter(v=>v==='notfound').length;
   document.getElementById('sFound').textContent=f;
   document.getElementById('sNF').textContent=n;
-  document.getElementById('prog').textContent=`${f+n} / ${customers.length} ολοκληρωμένοι`;
+  document.getElementById('prog').textContent=`${f+n} / ${customers.length} &#959;&#955;&#959;&#954;&#955;&#951;&#961;&#969;&#956;&#941;&#957;&#959;&#953;`;
 }
 
 function exportCSV(){
   const nf=customers.filter(c=>status[c.res]==='notfound');
-  if(!nf.length){alert('Δεν υπάρχουν "Δεν βρέθηκαν" για export.');return;}
-  const rows=[['Ονομα','Τηλεφωνο','Τυπος','Κρατηση']];
+  if(!nf.length){alert('&#916;&#949;&#957; &#965;&#960;&#940;&#961;&#967;&#959;&#965;&#957; "&#916;&#949;&#957; &#946;&#961;&#941;&#952;&#951;&#954;&#945;&#957;" &#947;&#953;&#945; export.');return;}
+  const rows=[['&#927;&#957;&#959;&#956;&#945;','&#932;&#951;&#955;&#949;&#966;&#969;&#957;&#959;','&#932;&#965;&#960;&#959;&#962;','&#922;&#961;&#945;&#964;&#951;&#963;&#951;']];
   nf.forEach(c=>rows.push([c.name,'+'+getPhone(c),c.type,c.res]));
   const csv=rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
   const a=document.createElement('a');
