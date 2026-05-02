@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Abby Car — WhatsApp Tool</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root {
+    --green: #25D366;
+    --green-dark: #1eb85a;
+    --blue: #0C447C;
+    --blue-light: #E6F1FB;
+    --teal: #27500A;
+    --teal-light: #EAF3DE;
+    --warn-bg: #FFF8E6;
+    --warn-border: #F0C040;
+    --warn-text: #7A5500;
+    --success-bg: #EAFAF1;
+    --success-border: #27AE60;
+    --success-text: #1D6A3A;
+    --danger-bg: #FDECEA;
+    --danger-border: #E24B4A;
+    --danger-text: #8B1A1A;
+    --bg: #F7F7F8;
+    --card-bg: #FFFFFF;
+    --border: #E5E5E5;
+    --text: #1A1A1A;
+    --text-secondary: #6B6B6B;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  .header { background: #fff; border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+  .header-logo { font-size: 22px; }
+  .header h1 { font-size: 18px; font-weight: 600; }
+  .header p { font-size: 13px; color: var(--text-secondary); }
+  .container { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
+  .upload-area { border: 2px dashed var(--border); border-radius: var(--radius); padding: 2rem; text-align: center; cursor: pointer; background: #fff; transition: border-color 0.2s, background 0.2s; margin-bottom: 24px; }
+  .upload-area:hover { border-color: var(--green); background: #F0FDF4; }
+  .upload-area.drag { border-color: var(--green); background: #F0FDF4; }
+  .upload-area input { display: none; }
+  .upload-icon { font-size: 32px; margin-bottom: 8px; }
+  .upload-area h3 { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+  .upload-area p { font-size: 13px; color: var(--text-secondary); }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+  .stat { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; text-align: center; }
+  .stat-num { font-size: 28px; font-weight: 600; }
+  .stat-label { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .section-label { font-size: 11px; font-weight: 600; color: var(--text-secondary); letter-spacing: 0.07em; text-transform: uppercase; margin: 20px 0 10px; }
+  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; transition: opacity 0.2s; }
+  .card.done { opacity: 0.4; }
+  .card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 6px; }
+  .cname { font-weight: 600; font-size: 15px; }
+  .badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+  .bp { background: var(--blue-light); color: var(--blue); }
+  .ba { background: var(--teal-light); color: var(--teal); }
+  .meta { font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; font-family: monospace; }
+  .msg-box { background: var(--bg); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 13px; line-height: 1.7; white-space: pre-wrap; margin-bottom: 12px; border: 1px solid var(--border); }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn { padding: 8px 14px; border-radius: var(--radius-sm); font-size: 13px; cursor: pointer; border: 1px solid var(--border); background: #fff; color: var(--text); font-weight: 500; transition: background 0.15s; }
+  .btn:hover { background: var(--bg); }
+  .btn-wa { background: var(--green); color: #fff; border-color: var(--green); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: var(--radius-sm); font-size: 13px; }
+  .btn-wa:hover { background: var(--green-dark); }
+  .btn-ok { background: var(--success-bg); color: var(--success-text); border-color: var(--success-border); }
+  .btn-no { background: var(--danger-bg); color: var(--danger-text); border-color: var(--danger-border); }
+  .warn-box { background: var(--warn-bg); border: 1px solid var(--warn-border); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 12px; font-size: 13px; }
+  .warn-title { font-weight: 600; color: var(--warn-text); margin-bottom: 6px; }
+  .warn-text { color: var(--text); margin-bottom: 10px; line-height: 1.5; }
+  .fix-row { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
+  .fix-row input { flex: 1; padding: 7px 10px; font-size: 13px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: #fff; color: var(--text); font-family: monospace; }
+  .success-note { background: var(--success-bg); border: 1px solid var(--success-border); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 13px; color: var(--success-text); margin-bottom: 12px; font-weight: 500; }
+  .bottom-bar { position: sticky; bottom: 0; background: #fff; border-top: 1px solid var(--border); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; margin-top: 24px; }
+  .prog { font-size: 13px; color: var(--text-secondary); }
+  .error-msg { background: var(--danger-bg); border: 1px solid var(--danger-border); border-radius: var(--radius); padding: 14px; font-size: 14px; color: var(--danger-text); margin-bottom: 16px; }
+  .file-info { font-size: 13px; color: var(--success-text); background: var(--success-bg); border-radius: var(--radius-sm); padding: 6px 12px; display: inline-block; margin-bottom: 16px; border: 1px solid var(--success-border); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">🚗</div>
+  <div>
+    <h1>Abby Car — WhatsApp Tool</h1>
+    <p>Ανέβασε το Reservations Journal από το Wheelso (.xlsx)</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()"
+    ondragover="event.preventDefault();this.classList.add('drag')"
+    ondragleave="this.classList.remove('drag')"
+    ondrop="handleDrop(event)">
+    <input type="file" id="fileInput" accept=".xlsx,.xls" onchange="handleFile(event)"/>
+    <div class="upload-icon">📂</div>
+    <h3>Ανέβασε το Excel από το Wheelso</h3>
+    <p>Κάνε κλικ ή σύρε το αρχείο εδώ · .xlsx ή .xls</p>
+  </div>
+
+  <div id="fileInfo"></div>
+  <div id="errorMsg"></div>
+  <div id="statsArea" style="display:none">
+    <div class="stats">
+      <div class="stat"><div class="stat-num" id="sTotal">0</div><div class="stat-label">Σύνολο</div></div>
+      <div class="stat"><div class="stat-num" style="color:#27AE60" id="sFound">0</div><div class="stat-label">Βρέθηκαν</div></div>
+      <div class="stat"><div class="stat-num" style="color:#E24B4A" id="sNF">0</div><div class="stat-label">Δεν βρέθηκαν</div></div>
+    </div>
+  </div>
+  <div id="list"></div>
+  <div class="bottom-bar" id="bottomBar" style="display:none">
+    <span class="prog" id="prog">0 ολοκληρωμένοι</span>
+    <button class="btn" onclick="exportCSV()">⬇ Export CSV</button>
+  </div>
+</div>
+
+<script>
+const PORT_MSG = n => `Hello ${n} from Abby Car 🚗☀️\nWe hope you're excited for your trip to Naxos! To prepare your rental, could you please let us know:\n🛳 Which boat/ferry are you arriving with?\nThis helps us have everything ready on time.\nJust a quick note: due to port rules and heavy traffic, we can't meet you directly at the port. But our office is only an easy 8-minute walk away!\n📍 Find us here: https://maps.app.goo.gl/ecDhc1aAghmEsyDaA\nWe've attached a photo of the entrance to help.\nFeel free to message or call us if needed—we're happy to help!\n– Abby Car, Naxos`;
+const AIRPORT_MSG = n => `Hello ${n} from Abby Car 🚗☀️\nWe hope you're excited for your trip to Naxos! To better prepare your car rental, could you please let us know:\n✈️ Which flight number will you be arriving with tomorrow?\nThis helps us ensure a smooth pickup for you.\nThank you and safe travels!\n– Abby Car, Naxos`;
+
+const CC = [
+  {code:'1',name:'USA/Canada',min:10,max:10},{code:'30',name:'Greece',min:10,max:10},
+  {code:'31',name:'Netherlands',min:9,max:9},{code:'32',name:'Belgium',min:8,max:9},
+  {code:'33',name:'France',min:9,max:9},{code:'34',name:'Spain',min:9,max:9},
+  {code:'357',name:'Cyprus',min:8,max:8},{code:'39',name:'Italy',min:9,max:10},
+  {code:'40',name:'Romania',min:9,max:9},{code:'41',name:'Switzerland',min:9,max:9},
+  {code:'43',name:'Austria',min:7,max:13},{code:'44',name:'UK',min:10,max:10},
+  {code:'45',name:'Denmark',min:8,max:8},{code:'46',name:'Sweden',min:7,max:9},
+  {code:'47',name:'Norway',min:8,max:8},{code:'48',name:'Poland',min:9,max:9},
+  {code:'49',name:'Germany',min:10,max:11},{code:'351',name:'Portugal',min:9,max:9},
+  {code:'353',name:'Ireland',min:9,max:9},{code:'358',name:'Finland',min:9,max:10},
+  {code:'36',name:'Hungary',min:9,max:9},{code:'370',name:'Lithuania',min:8,max:8},
+  {code:'380',name:'Ukraine',min:9,max:9},{code:'385',name:'Croatia',min:8,max:9},
+  {code:'420',name:'Czech Rep.',min:9,max:9},{code:'7',name:'Russia',min:10,max:10},
+  {code:'90',name:'Turkey',min:10,max:10},{code:'971',name:'UAE',min:9,max:9},
+  {code:'972',name:'Israel',min:9,max:9},{code:'995',name:'Georgia',min:9,max:9},
+  {code:'61',name:'Australia',min:9,max:9},{code:'86',name:'China',min:11,max:11},
+  {code:'91',name:'India',min:10,max:10},
+];
+
+function cleanPhone(raw) {
+  if (!raw) return '';
+  return String(raw).replace(/[\s\-\(\)\.]/g,'').replace(/^00/,'').replace(/^\+/,'');
+}
+
+function detectCC(digits) {
+  const sorted = [...CC].sort((a,b)=>b.code.length-a.code.length);
+  for (const c of sorted) {
+    if (digits.startsWith(c.code)) {
+      const local = digits.slice(c.code.length);
+      const lc = local.startsWith('0') ? local.slice(1) : local;
+      return {...c, local, lc, valid: lc.length>=c.min && lc.length<=c.max};
+    }
+  }
+  return null;
+}
+
+function analyzePhone(raw) {
+  if (!raw || String(raw).trim()==='') return {ok:false,empty:true,issues:['Δεν υπάρχει τηλέφωνο.'],suggestions:[]};
+  const digits = cleanPhone(raw);
+  const d = detectCC(digits);
+  const issues=[], sugg=[];
+  if (d) {
+    if (d.local.startsWith('0') && d.lc.length>=d.min && d.lc.length<=d.max) {
+      sugg.push({label:`Αφαίρεσε το μηδέν (${d.name})`, phone: d.code+d.lc});
+      issues.push(`+${d.code} (${d.name}): τοπικός αρ. αρχίζει με 0.`);
+      return {ok:false,issues,suggestions:sugg,phone:digits};
+    }
+    if (d.valid) return {ok:true, phone: d.code+d.lc};
+    issues.push(`+${d.code} (${d.name}): ${d.local.length} ψηφία (αναμένονται ${d.min}–${d.max}).`);
+    if (d.local.length>d.max) {
+      sugg.push({label:`Τελευταία ${d.max} ψηφία`, phone: d.code+d.local.slice(d.local.length-d.max)});
+      sugg.push({label:`Πρώτα ${d.max} ψηφία`, phone: d.code+d.local.slice(0,d.max)});
+    }
+  } else {
+    issues.push('Άγνωστος κωδικός χώρας.');
+    if (digits.length===10 && digits.startsWith('69')) sugg.push({label:'Ελληνικό κινητό (+30)', phone:'30'+digits});
+    if (digits.length===10 && digits.startsWith('6')) sugg.push({label:'Ελληνικό (+30)', phone:'30'+digits});
+  }
+  return {ok:false,issues,suggestions:sugg,phone:digits};
+}
+
+let customers=[], status={}, corrected={};
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('uploadArea').classList.remove('drag');
+  const f = e.dataTransfer.files[0];
+  if (f) processFile(f);
+}
+function handleFile(e) { if (e.target.files[0]) processFile(e.target.files[0]); }
+
+function processFile(file) {
+  document.getElementById('errorMsg').innerHTML='';
+  document.getElementById('fileInfo').innerHTML=`<div class="file-info">📄 ${file.name}</div>`;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const wb = XLSX.read(e.target.result, {type:'array'});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, {defval:''});
+      parseRows(rows);
+    } catch(err) {
+      document.getElementById('errorMsg').innerHTML=`<div class="error-msg">Σφάλμα ανάγνωσης αρχείου. Βεβαιώσου ότι είναι .xlsx από το Wheelso.</div>`;
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function parseRows(rows) {
+  customers=[]; status={}; corrected={};
+  const locKey = Object.keys(rows[0]).find(k => k.toLowerCase().includes('check-out location') || k.toLowerCase().includes('checkout location') || k==='Check-out Location');
+  const nameKey = Object.keys(rows[0]).find(k => k.toLowerCase().includes('driver') && !k.toLowerCase().includes('phone') && !k.toLowerCase().includes('email') && !k.toLowerCase().includes('country') && !k.toLowerCase().includes('taxid') && !k.toLowerCase().includes('loyalty'));
+  const phoneKey = Object.keys(rows[0]).find(k => k.toLowerCase().includes('driver phone') || k==='Driver phone');
+  const resKey = Object.keys(rows[0]).find(k => k.toLowerCase().includes('res no') || k==='Res no');
+
+  if (!locKey || !nameKey || !phoneKey) {
+    document.getElementById('errorMsg').innerHTML=`<div class="error-msg">Δεν βρέθηκαν οι σωστές στήλες. Βεβαιώσου ότι ανεβάζεις το Reservations Journal από το Wheelso.</div>`;
+    return;
+  }
+
+  rows.forEach(r => {
+    const loc = String(r[locKey]||'').trim();
+    if (loc!=='Port' && loc!=='Airport') return;
+    const name = String(r[nameKey]||'').trim();
+    const phone = String(r[phoneKey]||'').trim();
+    const res = String(r[resKey]||'').trim();
+    if (!name || name==='Total') return;
+    const analysis = analyzePhone(phone);
+    customers.push({name, phone, res, type: loc.toLowerCase(), analysis, cleanPhone: analysis.phone||cleanPhone(phone)});
+  });
+
+  if (customers.length===0) {
+    document.getElementById('errorMsg').innerHTML=`<div class="error-msg">Δεν βρέθηκαν κρατήσεις Port ή Airport.</div>`;
+    document.getElementById('statsArea').style.display='none';
+    document.getElementById('bottomBar').style.display='none';
+    document.getElementById('list').innerHTML='';
+    return;
+  }
+
+  document.getElementById('sTotal').textContent=customers.length;
+  document.getElementById('statsArea').style.display='block';
+  document.getElementById('bottomBar').style.display='flex';
+  render();
+}
+
+function getPhone(c) { return corrected[c.res] || c.cleanPhone; }
+
+function firstName(n) {
+  const p = n.trim().split(/\s+/);
+  return p[0].charAt(0).toUpperCase()+p[0].slice(1).toLowerCase();
+}
+
+function render() {
+  const ports=customers.filter(c=>c.type==='port');
+  const airports=customers.filter(c=>c.type==='airport');
+  let html='';
+  if(ports.length){html+=`<div class="section-label">🛳 Port (${ports.length})</div>`;ports.forEach(c=>html+=card(c));}
+  if(airports.length){html+=`<div class="section-label">✈️ Airport (${airports.length})</div>`;airports.forEach(c=>html+=card(c));}
+  document.getElementById('list').innerHTML=html;
+  updateStats();
+}
+
+function card(c) {
+  const ph=getPhone(c);
+  const ra=corrected[c.res]?analyzePhone('+'+corrected[c.res]):c.analysis;
+  const msg=c.type==='port'?PORT_MSG(firstName(c.name)):AIRPORT_MSG(firstName(c.name));
+  const waUrl=`https://wa.me/${ph}?text=${encodeURIComponent(msg)}`;
+  const s=status[c.res];
+
+  let phoneBlock='';
+  if(corrected[c.res]){
+    phoneBlock=`<div class="success-note">✓ Αριθμός διορθώθηκε σε +${ph}</div>`;
+  } else if(!ra.ok){
+    const sugHtml=ra.suggestions.map((sg,i)=>`
+      <div style="margin-bottom:8px">
+        <div style="font-size:12px;color:#666;margin-bottom:4px">${sg.label}:</div>
+        <div class="fix-row">
+          <input type="text" id="sg-${c.res}-${i}" value="+${sg.phone}"/>
+          <button class="btn" onclick="applyPhone('${c.res}',document.getElementById('sg-${c.res}-${i}').value)">Εφάρμοσε</button>
+        </div>
+      </div>`).join('');
+    phoneBlock=`<div class="warn-box">
+      <div class="warn-title">⚠️ Πιθανό λάθος αριθμός</div>
+      <div class="warn-text">${ra.issues.join(' ')}</div>
+      ${sugHtml}
+      <div style="border-top:1px solid ${ra.suggestions.length?'#F0C040':'#eee'};padding-top:10px;margin-top:8px">
+        <div style="font-size:12px;color:#666;margin-bottom:4px">Χειροκίνητη διόρθωση:</div>
+        <div class="fix-row">
+          <input type="text" id="man-${c.res}" value="+${ph}"/>
+          <button class="btn" onclick="applyPhone('${c.res}',document.getElementById('man-${c.res}').value)">Εφάρμοσε</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  return `<div class="card ${s?'done':''}">
+    <div class="card-top">
+      <span class="cname">${c.name}</span>
+      <span class="badge ${c.type==='port'?'bp':'ba'}">${c.type==='port'?'Port':'Airport'}</span>
+    </div>
+    <div class="meta">+${ph} · ${c.res}</div>
+    ${phoneBlock}
+    <div class="msg-box">${msg}</div>
+    <div class="actions">
+      <a class="btn-wa" href="${waUrl}" target="_blank">Ανοιξε στο WhatsApp</a>
+      <button class="btn ${s==='found'?'btn-ok':''}" onclick="mark('${c.res}','found')">✓ Βρέθηκε</button>
+      <button class="btn ${s==='notfound'?'btn-no':''}" onclick="mark('${c.res}','notfound')">✗ Δεν βρέθηκε</button>
+    </div>
+  </div>`;
+}
+
+function applyPhone(res,val){corrected[res]=val.replace(/[\s\-\+\(\)]/g,'');render();}
+function mark(res,val){status[res]=val;render();}
+
+function updateStats(){
+  const f=Object.values(status).filter(v=>v==='found').length;
+  const n=Object.values(status).filter(v=>v==='notfound').length;
+  document.getElementById('sFound').textContent=f;
+  document.getElementById('sNF').textContent=n;
+  document.getElementById('prog').textContent=`${f+n} / ${customers.length} ολοκληρωμένοι`;
+}
+
+function exportCSV(){
+  const nf=customers.filter(c=>status[c.res]==='notfound');
+  if(!nf.length){alert('Δεν υπάρχουν "Δεν βρέθηκαν" για export.');return;}
+  const rows=[['Ονομα','Τηλεφωνο','Τυπος','Κρατηση']];
+  nf.forEach(c=>rows.push([c.name,'+'+getPhone(c),c.type,c.res]));
+  const csv=rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'}));
+  a.download='not_found_whatsapp.csv';a.click();
+}
+</script>
+</body>
+</html>
