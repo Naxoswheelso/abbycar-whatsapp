@@ -115,8 +115,14 @@
 </div>
 
 <script>
-const PORT_MSG = n => `Hello ${n} from Abby Car \u{1F697}\u2600\uFE0F\nWe hope you're excited for your trip to Naxos! To prepare your rental, could you please let us know:\n\u{1F6F3} Which boat/ferry are you arriving with?\nThis helps us have everything ready on time.\nJust a quick note: due to port rules and heavy traffic, we can't meet you directly at the port. But our office is only an easy 8-minute walk away!\n\u{1F4CD} Find us here: https://maps.app.goo.gl/ecDhc1aAghmEsyDaA\nWe've attached a photo of the entrance to help.\nFeel free to message or call us if needed\u2014we're happy to help!\n\u2013 Abby Car, Naxos`;
-const AIRPORT_MSG = n => `Hello ${n} from Abby Car \u{1F697}\u2600\uFE0F\nWe hope you're excited for your trip to Naxos! To better prepare your car rental, could you please let us know:\n\u2708\uFE0F Which flight number will you be arriving with tomorrow?\nThis helps us ensure a smooth pickup for you.\nThank you and safe travels!\n\u2013 Abby Car, Naxos`;
+// Pre-encoded message templates (emoji encoded server-side for reliability)
+const PORT_ENCODED = "Hello%20NAMEPLACEHOLDER%20from%20Abby%20Car%20%F0%9F%9A%97%E2%98%80%EF%B8%8F%0AWe%20hope%20you%27re%20excited%20for%20your%20trip%20to%20Naxos%21%20To%20prepare%20your%20rental%2C%20could%20you%20please%20let%20us%20know%3A%0A%F0%9F%9B%B3%20Which%20boat%2Fferry%20are%20you%20arriving%20with%3F%0AThis%20helps%20us%20have%20everything%20ready%20on%20time.%0AJust%20a%20quick%20note%3A%20due%20to%20port%20rules%20and%20heavy%20traffic%2C%20we%20can%27t%20meet%20you%20directly%20at%20the%20port.%20But%20our%20office%20is%20only%20an%20easy%208-minute%20walk%20away%21%0A%F0%9F%93%8D%20Find%20us%20here%3A%20https%3A%2F%2Fmaps.app.goo.gl%2FecDhc1aAghmEsyDaA%0AWe%27ve%20attached%20a%20photo%20of%20the%20entrance%20to%20help.%0AFeel%20free%20to%20message%20or%20call%20us%20if%20needed%E2%80%94we%27re%20happy%20to%20help%21%0A%E2%80%93%20Abby%20Car%2C%20Naxos";
+const AIRPORT_ENCODED = "Hello%20NAMEPLACEHOLDER%20from%20Abby%20Car%20%F0%9F%9A%97%E2%98%80%EF%B8%8F%0AWe%20hope%20you%27re%20excited%20for%20your%20trip%20to%20Naxos%21%20To%20better%20prepare%20your%20car%20rental%2C%20could%20you%20please%20let%20us%20know%3A%0A%E2%9C%88%EF%B8%8F%20Which%20flight%20number%20will%20you%20be%20arriving%20with%20tomorrow%3F%0AThis%20helps%20us%20ensure%20a%20smooth%20pickup%20for%20you.%0AThank%20you%20and%20safe%20travels%21%0A%E2%80%93%20Abby%20Car%2C%20Naxos";
+const PORT_MSG = n => decodeURIComponent(PORT_ENCODED.replace('NAMEPLACEHOLDER', encodeURIComponent(n)));
+const AIRPORT_MSG = n => decodeURIComponent(AIRPORT_ENCODED.replace('NAMEPLACEHOLDER', encodeURIComponent(n)));
+// WA URL builder uses pre-encoded string directly (no double-encoding)
+const PORT_WA = (phone, n) => "https://wa.me/" + phone + "?text=" + PORT_ENCODED.replace('NAMEPLACEHOLDER', encodeURIComponent(n));
+const AIRPORT_WA = (phone, n) => "https://wa.me/" + phone + "?text=" + AIRPORT_ENCODED.replace('NAMEPLACEHOLDER', encodeURIComponent(n));
 
 const CC = [
   {code:'1',name:'USA/Canada',min:10,max:10},{code:'30',name:'Greece',min:10,max:10},
@@ -265,7 +271,7 @@ function card(c) {
   const ph=getPhone(c);
   const ra=corrected[c.res]?analyzePhone('+'+corrected[c.res]):c.analysis;
   const msg=c.type==='port'?PORT_MSG(firstName(c.name)):AIRPORT_MSG(firstName(c.name));
-  const waUrl=`https://wa.me/${ph}?text=${encodeURIComponent(msg)}`;
+  const waUrl = c.type==="port" ? PORT_WA(ph, firstName(c.name)) : AIRPORT_WA(ph, firstName(c.name));
   const s=status[c.res];
 
   let phoneBlock='';
