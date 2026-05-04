@@ -4,8 +4,9 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Abby Car - WhatsApp Tool</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-:root{--green:#25D366;--gd:#1eb85a;--blue:#0C447C;--bl:#E6F1FB;--teal:#27500A;--tl:#EAF3DE;--wb:#FFF8E6;--wbr:#F0C040;--wt:#7A5500;--sb:#EAFAF1;--sbr:#27AE60;--st:#1D6A3A;--db:#FDECEA;--dbr:#E24B4A;--dt:#8B1A1A;--bg:#F7F7F8;--card:#fff;--brd:#E5E5E5;--txt:#1A1A1A;--t2:#6B6B6B;--r:10px;--rs:6px;}
+:root{--green:#25D366;--gd:#1eb85a;--blue:#0C447C;--bl:#E6F1FB;--teal:#27500A;--tl:#EAF3DE;--wb:#FFF8E6;--wbr:#F0C040;--wt:#7A5500;--sb:#EAFAF1;--sbr:#27AE60;--st:#1D6A3A;--db:#FDECEA;--dbr:#E24B4A;--dt:#8B1A1A;--bg:#F7F7F8;--brd:#E5E5E5;--txt:#1A1A1A;--t2:#6B6B6B;--r:10px;--rs:6px;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);}
 .hdr{background:#fff;border-bottom:1px solid var(--brd);padding:14px 20px;display:flex;align-items:center;gap:10px;}
@@ -17,8 +18,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .up input{display:none;}
 .up h3{font-size:15px;font-weight:500;margin:8px 0 4px;}
 .up p{font-size:13px;color:var(--t2);}
-.tags{display:flex;gap:6px;justify-content:center;margin-top:10px;}
-.tag{font-size:11px;font-weight:600;padding:2px 10px;border-radius:20px;border:1px solid var(--brd);color:var(--t2);}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
 .stat{background:#fff;border:1px solid var(--brd);border-radius:var(--r);padding:12px;text-align:center;}
 .sn{font-size:26px;font-weight:600;}
@@ -50,28 +49,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .pr{font-size:12px;color:var(--t2);}
 .err{background:var(--db);border:1px solid var(--dbr);border-radius:var(--r);padding:12px;font-size:13px;color:var(--dt);margin-bottom:14px;}
 .fi{font-size:12px;color:var(--st);background:var(--sb);border-radius:var(--rs);padding:5px 10px;display:inline-block;margin-bottom:14px;border:1px solid var(--sbr);}
-.ld{text-align:center;padding:2rem;color:var(--t2);font-size:14px;}
 </style>
 </head>
 <body>
 <div class="hdr">
   <div style="font-size:20px">&#x1F697;</div>
-  <div><h1>Abby Car &mdash; WhatsApp Tool</h1><p>Upload Reservations Journal (.xlsx or .pdf)</p></div>
+  <div><h1>Abby Car &mdash; WhatsApp Tool</h1><p>Upload Reservations Journal (.xlsx)</p></div>
 </div>
 <div class="wrap">
   <div class="up" id="up" onclick="document.getElementById('fi').click()"
     ondragover="event.preventDefault();this.classList.add('drag')"
     ondragleave="this.classList.remove('drag')"
     ondrop="onDrop(event)">
-    <input type="file" id="fi" accept=".xlsx,.xls,.pdf" onchange="onFile(event)"/>
-    <div style="font-size:28px">&#x1F4C2;</div>
-    <h3>Upload Excel or PDF from Wheelso</h3>
-    <p>Click or drag file here</p>
-    <div class="tags">
-      <span class="tag">&#x1F4CA; .xlsx</span>
-      <span class="tag">&#x1F4CB; .xls</span>
-      <span class="tag">&#x1F4C4; .pdf</span>
-    </div>
+    <input type="file" id="fi" accept=".xlsx,.xls" onchange="onFile(event)"/>
+    <div style="font-size:28px">&#x1F4CA;</div>
+    <h3>Upload Excel from Wheelso</h3>
+    <p>Click or drag .xlsx file here</p>
   </div>
   <div id="fi2"></div>
   <div id="err"></div>
@@ -79,7 +72,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="stats">
       <div class="stat"><div class="sn" id="st">0</div><div class="sl">Total</div></div>
       <div class="stat"><div class="sn" style="color:#27AE60" id="sf">0</div><div class="sl">Found</div></div>
-      <div class="stat"><div class="sn" style="color:#E24B4A" id="sn">0</div><div class="sl">Not found</div></div>
+      <div class="stat"><div class="sn" style="color:#E24B4A" id="sn2">0</div><div class="sl">Not found</div></div>
     </div>
   </div>
   <div id="list"></div>
@@ -88,12 +81,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <button class="btn" onclick="expCSV()">&#x2B07; Export CSV</button>
   </div>
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
-
-pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
 const PE="Hello%20NAMEPLACEHOLDER%20from%20Abby%20Car%20%F0%9F%9A%97%E2%98%80%EF%B8%8F%0ATo%20get%20your%20car%20ready%2C%20please%20reply%20with%3A%0A%E2%80%A2%20Ferry%2Fboat%20name%20and%20arrival%20time%0A%0APickup%20is%20at%20our%20office%20%28a%20short%2C%20easy%20walk%20from%20the%20port%29%3A%0A%F0%9F%93%8D%20Office%20location%3A%20https%3A%2F%2Fmaps.app.goo.gl%2FWaCNMPVDFQZeFGNV8%0A%E2%9E%A1%EF%B8%8F%20Best%20walking%20route%20from%20the%20port%3A%20https%3A%2F%2Fmaps.app.goo.gl%2FecDhc1aAghmEsyDaA%0A%0APlease%20bring%20the%20main%20driver%27s%3A%0A%E2%80%A2%20Passport%20or%20ID%0A%E2%80%A2%20Driver%27s%20license%0A%E2%80%A2%20Credit%20card%0A%28all%20documents%20have%20to%20be%20in%20original%20physical%20form%20and%20under%20the%20main%20driver%27s%20name%29.%0A%0AYour%20rental%20voucher%20%28digital%20is%20fine%29%0A%0AMessage%20or%20call%20us%20anytime%E2%80%94happy%20to%20help%21%0A%E2%80%94%20Abby%20Car%2C%20Naxos%20%F0%9F%8F%9D%EF%B8%8F";
 const AE="Hello%20NAMEPLACEHOLDER%20from%20Abby%20Car%20%F0%9F%9A%97%E2%98%80%EF%B8%8F%0AWe%20hope%20you%27re%20excited%20for%20your%20trip%20to%20Naxos%21%20To%20better%20prepare%20your%20car%20rental%2C%20could%20you%20please%20let%20us%20know%3A%0A%E2%9C%88%EF%B8%8F%20Which%20flight%20number%20will%20you%20be%20arriving%20with%20tomorrow%3F%0AThis%20helps%20us%20ensure%20a%20smooth%20pickup%20for%20you.%0AThank%20you%20and%20safe%20travels%21%0A%E2%80%93%20Abby%20Car%2C%20Naxos";
@@ -163,86 +151,29 @@ function onFile(e){if(e.target.files[0])processFile(e.target.files[0]);}
 function processFile(file){
   document.getElementById('err').innerHTML='';
   document.getElementById('fi2').innerHTML='<div class="fi">&#x1F4C4; '+file.name+'</div>';
-  document.getElementById('list').innerHTML='<div class="ld">Reading file...</div>';
-  const ext=file.name.split('.').pop().toLowerCase();
   const reader=new FileReader();
-  reader.onerror=()=>showErr('Could not read file. On Android try "Save as copy" first.');
-  if(ext==='pdf'){
-    reader.onload=e=>readPDF(e.target.result);
-    reader.readAsArrayBuffer(file);
-  }else{
-    reader.onload=e=>readXLSX(e.target.result);
-    reader.readAsArrayBuffer(file);
-  }
-}
-
-function readXLSX(buf){
-  let rows=null;
-  const opts=[
-    {type:'array',cellStyles:false},
-    {type:'array',cellStyles:false,password:''},
-    {type:'array',raw:true},
-    {type:'array'},
-  ];
-  for(const o of opts){
+  reader.onload=function(e){
     try{
-      const wb=XLSX.read(buf,o);
+      const wb=XLSX.read(e.target.result,{type:'array',cellStyles:false});
       const ws=wb.Sheets[wb.SheetNames[0]];
-      rows=XLSX.utils.sheet_to_json(ws,{defval:''});
-      if(rows&&rows.length)break;
-    }catch(e){continue;}
-  }
-  if(!rows||!rows.length){showErr('Cannot read Excel file. On Android, open it and tap "Save as copy", then upload that copy.');return;}
-  parseXLSX(rows);
-}
-
-async function readPDF(buf){
-  try{
-    const pdf=await pdfjsLib.getDocument({data:buf,verbosity:0}).promise;
-    let text='';
-    for(let i=1;i<=pdf.numPages;i++){
-      const pg=await pdf.getPage(i);
-      const ct=await pg.getTextContent();
-      text+=ct.items.map(x=>x.str).join(' ')+'\n';
+      const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+      parseRows(rows);
+    }catch(err){
+      showErr('Cannot read file: '+err.message);
     }
-    parsePDF(text);
-  }catch(e){showErr('Cannot read PDF: '+e.message);}
+  };
+  reader.readAsArrayBuffer(file);
 }
 
-function parsePDF(text){
+function parseRows(rows){
   custs=[];status={};corr={};
-  // Split by reservation number
-  const chunks=text.split(/(?=NAX(?:RNT|RES)-\d+)/g);
-  chunks.forEach(chunk=>{
-    if(!/\bPort\b|\bAirport\b/.test(chunk))return;
-    const isAirport=/\bAirport\b/.test(chunk);
-    const isPort=/\bPort\b/.test(chunk)&&!isAirport;
-    if(!isPort&&!isAirport)return;
-    const res=(chunk.match(/NAX(?:RNT|RES)-\d+/)||[''])[0];
-    // Find phone - look for international format or 10-digit numbers
-    const phones=chunk.match(/(?:\+|00)?\d[\d\s\-](8, 14)\d/g)||[];
-    const phone=phones.find(p=>p.replace(/\D/g,'').length>=9)||'';
-    // Find name - capitalized words that aren't keywords
-    const skip=/^(NAXOS|NAX|PORT|AIRPORT|PETROL|MANUAL|AUTO|GREEN|VILLAGE|OFFICE|BLUE|STAR|SKYWARPEL|TRADING|LIMITED|WALK|DESK|ATHENS|CHAMPIONS|LEAGUE|CHAMPION|SKOPELITIS|SUPERRUNNER|EUROCHAMPION|CARTPREP|DYSNORFD|ABBYPN|WISECARS|IN|CNC|RES|ADD|EXTRD|OOHP|ADDF|WIN|GV|TEL|WAP|AB|PP|SF)$/;
-    const names=(chunk.match(/[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+){1,3}/g)||[]).filter(n=>!skip.test(n.split(' ')[0].toUpperCase())&&n.length>4);
-    if(!names.length||!phone)return;
-    const name=names[0];
-    const cleanedPhone=phone.replace(/[\s\-]/g,'');
-    const analysis=analyzeP(cleanedPhone);
-    custs.push({name,phone:cleanedPhone,res:res||('PDF-'+Math.random().toString(36).slice(2,5)),type:isAirport?'airport':'port',analysis,cp:analysis.phone||cleanP(cleanedPhone)});
-  });
-  if(!custs.length){showErr('No Port or Airport reservations found in PDF. Make sure this is the Reservations Journal from Wheelso.');return;}
-  showAll();
-}
-
-function parseXLSX(rows){
-  custs=[];status={};corr={};
+  if(!rows.length){showErr('Empty file.');return;}
   const k=Object.keys(rows[0]);
   const lk=k.find(x=>/check.out.location/i.test(x));
   const nk=k.find(x=>/^driver$/i.test(x)||(/driver/i.test(x)&&!/phone|email|country|tax|loyal/i.test(x)));
   const pk=k.find(x=>/driver.?phone/i.test(x));
   const rk=k.find(x=>/res.?no|agr.?no/i.test(x));
-  if(!lk||!nk||!pk){showErr('Wrong file format. Make sure this is the Reservations Journal from Wheelso.');return;}
+  if(!lk||!nk||!pk){showErr('Wrong columns. Make sure this is the Reservations Journal from Wheelso.');return;}
   rows.forEach(r=>{
     const loc=String(r[lk]||'').trim();
     if(loc!=='Port'&&loc!=='Airport')return;
@@ -254,10 +185,6 @@ function parseXLSX(rows){
     custs.push({name,phone,res,type:loc.toLowerCase(),analysis,cp:analysis.phone||cleanP(phone)});
   });
   if(!custs.length){showErr('No Port or Airport reservations found.');return;}
-  showAll();
-}
-
-function showAll(){
   document.getElementById('st').textContent=custs.length;
   document.getElementById('stats').style.display='block';
   document.getElementById('bar').style.display='flex';
@@ -283,31 +210,30 @@ function card(c){
   const msg=buildMsg(c.type==='port'?PE:AE,fn(c.name));
   const wa=buildWA(c.type==='port'?PE:AE,ph,fn(c.name));
   const s=status[c.res];
+  const rid=c.res.replace(/[^a-z0-9]/gi,'');
   let pb='';
   if(corr[c.res]){
     pb='<div class="ok">&#x2713; Corrected to +'+ph+'</div>';
   }else if(!ra.ok){
-    const sh=ra.suggestions.map((sg,i)=>'<div style="margin-bottom:6px"><div style="font-size:11px;color:#666;margin-bottom:3px">'+sg.label+':</div><div class="fr"><input type="text" id="s'+c.res.replace(/[^a-z0-9]/gi,'')+''+i+'" value="+'+sg.phone+'"/><button class="btn" onclick="applyP(''+c.res+'','s'+c.res.replace(/[^a-z0-9]/gi,'')+''+i+'')">Apply</button></div></div>').join('');
-    pb='<div class="warn"><div class="wt">&#x26A0; Possible wrong number</div><div class="wm">'+ra.issues.join(' ')+'</div>'+sh+'<div style="border-top:1px solid var(--wbr);padding-top:8px;margin-top:6px"><div style="font-size:11px;color:#666;margin-bottom:3px">Or type manually:</div><div class="fr"><input type="text" id="m'+c.res.replace(/[^a-z0-9]/gi,'')+'" value="+'+ph+'"/><button class="btn" onclick="applyP(''+c.res+'','m'+c.res.replace(/[^a-z0-9]/gi,'')+'')" >Apply</button></div></div></div>';
+    const sh=ra.suggestions.map((sg,i)=>'<div style="margin-bottom:6px"><div style="font-size:11px;color:#666;margin-bottom:3px">'+sg.label+':</div><div class="fr"><input type="text" id="s'+rid+i+'" value="+'+sg.phone+'"/><button class="btn" onclick="applyP(\'' +c.res+ '\',\'s'+rid+i+'\')">Apply</button></div></div>').join('');
+    pb='<div class="warn"><div class="wt">&#x26A0; Possible wrong number</div><div class="wm">'+ra.issues.join(' ')+'</div>'+sh+'<div style="border-top:1px solid var(--wbr);padding-top:8px;margin-top:6px"><div style="font-size:11px;color:#666;margin-bottom:3px">Or type manually:</div><div class="fr"><input type="text" id="m'+rid+'" value="+'+ph+'"/><button class="btn" onclick="applyP(\'' +c.res+ '\',\'m'+rid+'\')">Apply</button></div></div></div>';
   }
-  return '<div class="card '+(s?'done':'')+'"><div class="ct"><span class="cn">'+c.name+'</span><span class="badge '+(c.type==='port'?'bp':'ba')+'">'+(c.type==='port'?'Port':'Airport')+'</span></div><div class="meta">+'+ph+' &middot; '+c.res+'</div>'+pb+'<div class="msg">'+msg.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'\n')+'</div><div class="acts"><a class="bwa" href="'+wa+'" target="_blank">WhatsApp</a><button class="btn '+(s==='found'?'bok':'')+'" onclick="mark(''+c.res+'','found')">&#x2713; Found</button><button class="btn '+(s==='notfound'?'bno':'')+'" onclick="mark(''+c.res+'','notfound')">&#x2717; Not found</button></div></div>';
+  return '<div class="card '+(s?'done':'')+'"><div class="ct"><span class="cn">'+c.name+'</span><span class="badge '+(c.type==='port'?'bp':'ba')+'">'+(c.type==='port'?'Port':'Airport')+'</span></div><div class="meta">+'+ph+' &middot; '+c.res+'</div>'+pb+'<div class="msg">'+msg+'</div><div class="acts"><a class="bwa" href="'+wa+'" target="_blank">WhatsApp</a><button class="btn '+(s==='found'?'bok':'')+'" onclick="mark(\'' +c.res+ '\',\'found\')">&#x2713; Found</button><button class="btn '+(s==='notfound'?'bno':'')+'" onclick="mark(\'' +c.res+ '\',\'notfound\')">&#x2717; Not found</button></div></div>';
 }
 
 function applyP(res,id){corr[res]=document.getElementById(id).value.replace(/[\s\-\+\(\)]/g,'');render();}
 function mark(res,v){status[res]=v;render();}
 function showErr(m){document.getElementById('list').innerHTML='';document.getElementById('err').innerHTML='<div class="err">'+m+'</div>';document.getElementById('stats').style.display='none';document.getElementById('bar').style.display='none';}
-
 function updStats(){
   const f=Object.values(status).filter(v=>v==='found').length;
   const n=Object.values(status).filter(v=>v==='notfound').length;
   document.getElementById('sf').textContent=f;
-  document.getElementById('sn').textContent=n;
+  document.getElementById('sn2').textContent=n;
   document.getElementById('pr').textContent=(f+n)+' / '+custs.length+' completed';
 }
-
 function expCSV(){
   const nf=custs.filter(c=>status[c.res]==='notfound');
-  if(!nf.length){alert('No "Not found" entries to export.');return;}
+  if(!nf.length){alert('No not-found entries.');return;}
   const rows=[['Name','Phone','Type','Reservation']];
   nf.forEach(c=>rows.push([c.name,'+'+gp(c),c.type,c.res]));
   const csv=rows.map(r=>r.map(v=>'"'+v+'"').join(',')).join('\n');
